@@ -1,0 +1,71 @@
+name: Bug report
+description: Something does not work, especially a monitor that ignores DDC writes.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing. Brightness problems are almost always hardware/DDC
+        specific, so monitor model and the self-check log matter more than a
+        screenshot. Please do not paste anything containing personal paths or
+        user names; `BrightTray.exe test` does not include them.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      description: Steps to reproduce, including which action (tray scroll / popup slider / `set` command).
+    validations:
+      required: true
+  - type: textarea
+    id: selftest
+    attributes:
+      label: Output of `BrightTray.exe test`
+      description: Run it from a command prompt in the exe folder and paste BrightTray_test.log here.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: monitor
+    attributes:
+      label: Monitor model(s)
+      placeholder: "e.g. Dell U2723QE, one display, DP 1.4"
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - DisplayPort
+        - HDMI
+        - DVI
+        - USB-C / Thunderbolt
+        - Dock or KVM in between
+        - Laptop internal panel
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Windows version
+      placeholder: "e.g. Windows 11 24H2 build 26100"
+    validations:
+      required: true
+  - type: textarea
+    id: ddcci
+    attributes:
+      label: DDC/CI status
+      description: Is DDC/CI enabled in the monitor OSD? Does another tool (Twinkle Tray, Monitorian) control this display?
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I built from this repository's source or downloaded the CI-built exe (not a modified third-party build).
+          required: true
+        - label: I confirmed no second copy of BrightTray is running (single-writer requirement).
+          required: true

@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Actions are pinned to commit SHAs for supply-chain safety. Dependabot
+  # reads the version comments and opens a grouped PR when a pinned action
+  # needs updating, so pinning does not mean freezing forever.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - '*'

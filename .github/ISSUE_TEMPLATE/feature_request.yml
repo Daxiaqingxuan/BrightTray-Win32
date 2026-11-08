@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest an addition. Please note that this project deliberately stays minimal.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The project's design goal is a ~35 KB, single-file, dependency-free tray
+        utility. Features that require a runtime, a config file, a service, or a
+        large UI framework will usually be declined. Small Win32-level
+        improvements and hardware-compatibility fixes are very welcome.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+    validations:
+      required: true
+  - type: dropdown
+    id: cost
+    attributes:
+      label: Expected footprint impact
+      options:
+        - None / pure Win32 calls
+        - A few hundred lines of C
+        - New DLL dependency or new thread
+        - New runtime or framework
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Including existing tools such as Twinkle Tray, Monitorian or lumos_ddc.
+    validations:
+      required: false

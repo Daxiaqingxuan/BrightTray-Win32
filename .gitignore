@@ -1,0 +1,38 @@
+# Build output - binaries are produced by CI, never committed
+build/
+out/
+*.exe
+*.dll
+*.a
+*.lib
+*.obj
+*.o
+*.pdb
+*.ilk
+
+# Runtime diagnostics written by the app
+*.log
+BrightTray_test.log
+BrightTray_crash.txt
+*.dmp
+
+# Local backups and editor state
+*.bak
+*~
+*.swp
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# Python bytecode from gen_icon.py
+__pycache__/
+*.pyc
+
+# Local toolchains and downloaded archives (never commit compiler binaries)
+tcc/
+tools/tcc/
+_downloads/
+*.zip
+*.7z

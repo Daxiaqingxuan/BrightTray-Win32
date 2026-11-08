@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+
+# Contact links are deliberately absent: they require hard-coding a GitHub
+# account URL, which cannot be known before the repository is created.
+# Security reports go through the repository's "Security -> Report a
+# vulnerability" tab (see SECURITY.md). Questions are welcome as regular
+# issues; the bug and feature forms cover the common cases.
+# Once published, optional Discussions / advisory links can be added here —
+# see the copy-paste snippet in docs/PUBLISHING.md.

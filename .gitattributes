@@ -1,0 +1,28 @@
+# All files in this tree are LF. Keep them LF on checkout as well: bright.c
+# is compiled byte-for-byte reproducibly, and changing its line endings on a
+# Windows runner would break the source-hash check in tests/run_tests.py.
+# Declaring eol=crlf here would silently rewrite the source during checkout.
+* text=auto eol=lf
+
+*.c      text eol=lf
+*.sha256 text eol=lf
+*.h      text eol=lf
+*.def    text eol=lf
+*.cmd    text eol=lf
+*.bat    text eol=lf
+*.py     text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.svg    text eol=lf
+LICENSE  text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binary artifacts must never be diffed as text (and should not be committed).
+*.exe binary
+*.dll binary
+*.a   binary
+*.png binary
+*.ico binary
+*.zip binary

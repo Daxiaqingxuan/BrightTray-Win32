@@ -1,0 +1,38 @@
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '31 4 * * 1'
+  workflow_dispatch:
+
+# CodeQL C/C++ supports build-mode: none, which extracts the source without
+# running a compiler. That matters here: bright.c is Win32-only and cannot be
+# built by a Linux runner. All actions are pinned to a full commit SHA.
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: analyze (c-cpp)
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: github/codeql-action/init@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
+        with:
+          languages: c-cpp
+          build-mode: none
+          queries: security-and-quality
+
+      - uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4
+        with:
+          category: '/language:c-cpp'
