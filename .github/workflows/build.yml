@@ -64,6 +64,9 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           $expected = '34a721949a2583fdff725312da092fa0f5f1f284b702e6f811c6954714faabb2'
+          # Keep the archive outside the worktree: a stray .zip in the source
+          # tree trips the "no binaries" check below.
+          $zip = Join-Path $env:RUNNER_TEMP 'tcc-0.9.27-win64-bin.zip'
           $mirrors = @(
             'https://fosszone.csd.auth.gr/nongnu/tinycc/tcc-0.9.27-win64-bin.zip',
             'https://download.savannah.gnu.org/releases/tinycc/tcc-0.9.27-win64-bin.zip',
@@ -72,11 +75,11 @@ jobs:
           $ok = $false
           foreach ($url in $mirrors) {
             try {
-              Invoke-WebRequest -Uri $url -OutFile tcc.zip -TimeoutSec 120
-              $actual = (Get-FileHash tcc.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+              Invoke-WebRequest -Uri $url -OutFile $zip -TimeoutSec 120
+              $actual = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
               if ($actual -ne $expected) {
                 Write-Host "REJECTED $url : unexpected SHA256 $actual"
-                Remove-Item tcc.zip -Force
+                Remove-Item $zip -Force
                 continue
               }
               Write-Host "Verified $url : $actual"
@@ -84,11 +87,11 @@ jobs:
               break
             } catch {
               Write-Host "Mirror unavailable: $url"
-              Remove-Item tcc.zip -Force -ErrorAction SilentlyContinue
+              Remove-Item $zip -Force -ErrorAction SilentlyContinue
             }
           }
           if (-not $ok) { throw 'No mirror supplied the hash-pinned TinyCC archive' }
-          Expand-Archive -Path tcc.zip -DestinationPath tcc-dist -Force
+          Expand-Archive -Path $zip -DestinationPath tcc-dist -Force
           $tcc = Get-ChildItem -Path tcc-dist -Filter tcc.exe -Recurse | Select-Object -First 1
           if (-not $tcc) { throw 'tcc.exe not found in the verified archive' }
           "TCC_EXE=$($tcc.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -127,11 +130,10 @@ jobs:
       - name: Check that no binaries are committed
         shell: pwsh
         run: |
-          $unexpected = Get-ChildItem -Recurse -File | Where-Object {
-            $_.Extension -in @('.exe', '.dll', '.a', '.zip', '.obj') -and
-            $_.FullName -notmatch '\\build\\|\\tcc-dist\\'
-          }
-          if ($unexpected) { throw "Unexpected binaries in repository: $($unexpected.FullName -join ', ')" }
+          # Check the committed tree, not the worktree: build/ and tcc-dist/
+          # legitimately contain generated binaries at this point.
+          $unexpected = @(git ls-files | Where-Object { $_ -match '\.(exe|dll|a|zip|obj)$' })
+          if ($unexpected) { throw "Unexpected tracked binaries: $($unexpected -join ', ')" }
           Write-Host 'Source tree is free of binary artifacts'
 
       - name: Attest build provenance
