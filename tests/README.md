@@ -28,7 +28,7 @@ regress:
   workflow permissions are declared.
 - **Reproducibility** — `CHANGELOG.md` and `bright.c` agree on the source hash;
   if a local `build/BrightTray.exe` exists, it must match
-  `expected-binary.sha256` and be 35,328 bytes.
+  `expected-binary.sha256` and be 36,352 bytes.
 
 `lint_source.py` reports forbidden APIs as errors (non-zero exit), plus known
 technical debt as warnings and useful measurements as info. Warnings do not

@@ -6,17 +6,17 @@
 
 [简体中文说明](README.zh-CN.md)
 
-**A 35 KB, dependency-free brightness tray for Windows.** It changes the *hardware backlight* of external monitors over DDC/CI, and stays under 1 MB of RAM with 5 threads and 0% idle CPU.
+**A 36 KB, dependency-free brightness tray for Windows.** It changes the *hardware backlight* of external monitors over DDC/CI, and stays under 1 MB of RAM with 5 threads and 0% idle CPU.
 
 Built as a deliberately minimal alternative to [Twinkle Tray](https://github.com/xanderfrangos/twinkle-tray): no Electron, no .NET, no installer, no background service, no telemetry, no network access. One `.exe`, one hidden window, one worker thread.
 
-> **Name**: `BrightTray-Win32`. Two unrelated repositories already use the shorter name `BrightTray`; the suffix marks this as the pure-C Win32 implementation. A GitHub repository-name search on 2026-11-07 found no conflict, so this name can be used as-is when creating the repository.
+> **Name**: `BrightTray-Win32`. The suffix distinguishes this pure-C Win32 implementation from two unrelated projects that already use the shorter `BrightTray` name.
 
 ## At a glance
 
 | | BrightTray-Win32 | Typical Electron tray app |
 | --- | --- | --- |
-| Executable | 35 KB | tens of MB |
+| Executable | 36 KB | tens of MB |
 | Resident memory | 0.24 MB private / 0.5-1.0 MB working set | 100 MB+ |
 | Threads | 5 | dozens |
 | Runtime | none (system DLLs only) | Chromium / Node / .NET |
@@ -46,15 +46,27 @@ Writing to a monitor is a slow, lossy, half-duplex I/O channel. Four mechanisms 
 
 All four, plus two hard-won Win32 pitfalls (`hPhysicalMonitor` may legitimately be `0`; `NOTIFYICON_VERSION_4` reverses the message layout), are documented in [docs/DESIGN.md](docs/DESIGN.md).
 
+## Screenshots
+
+Unretouched window captures from Windows 11 at 100% DPI, with the English UI:
+
+![Tray popup with a vertical brightness slider](docs/assets/screenshot-popup.png)
+
+![OSD percentage overlay](docs/assets/screenshot-osd.png)
+
+![Right-click menu in English](docs/assets/screenshot-menu.png)
+
+Scroll on the tray icon and the OSD flashes the new value; click the icon for the slider panel above. The single-monitor popup is deliberately text-free — just a percentage and a slider — so the language difference shows up in the right-click menu, the tray tooltip, multi-monitor column names and the OSD caption (English shows `72%`, Chinese shows `亮度 72%`). All three images are unretouched window captures from the running exe (`BrightTray.exe shot` with `BRIGHTTRAY_LANG=en`), shown at native size, not mockups.
+
 ## Architecture and UI
 
 ![Single-process architecture of BrightTray-Win32](docs/assets/architecture.svg)
 
 The whole program is one process with one hidden window and one worker thread. Every hardware write goes through that worker; the UI thread never waits on DDC/CI.
 
-![Tray popup and OSD mockup](docs/assets/popup.svg)
+![Tray popup and OSD schematic](docs/assets/popup.svg)
 
-Both drawings are vector diagrams generated for this repository, not screenshots. The popup is 100x198 px at 100% DPI with a single monitor (215 px tall when several monitors are shown); the OSD is a brief, non-focus-taking overlay.
+The two SVG drawings are labelled schematics, not screenshots. The popup is 100x198 px at 100% DPI with a single monitor (215 px tall when several monitors are shown); the OSD is a brief, non-focus-taking overlay.
 
 ## Install and use
 
@@ -69,6 +81,8 @@ BrightTray.exe test       :: self-check; writes BrightTray_test.log
 BrightTray.exe shot       :: debug: open the popup immediately after startup
 ```
 
+The interface is English unless Windows is set to Simplified Chinese. To force a language, set `BRIGHTTRAY_LANG=en` or `BRIGHTTRAY_LANG=zh` in the environment before launching.
+
 ## Requirements and limitations
 
 - **DDC/CI must be enabled** in the monitor's OSD menu. Most monitors enable it by default.
@@ -77,7 +91,7 @@ BrightTray.exe shot       :: debug: open the popup immediately after startup
 - Windows 7 SP1 or newer; Windows 10/11 recommended. System-DPI aware (mixed-DPI multi-monitor setups may still look soft).
 - **Hardware backlight only.** No gamma/software dimming, no auto brightness, no schedule, no contrast/color temperature, no saved settings. The monitor's real current value is always the source of truth.
 - A permanently installed low-level mouse hook is required for scroll-over-tray-icon; see [Security and privacy](#security-and-privacy).
-- UI strings are currently Chinese only. English UI and i18n are on the roadmap; translations are welcome.
+- **Two UI languages.** English is the default; a zh-CN Windows automatically gets Simplified Chinese. Set `BRIGHTTRAY_LANG=en` or `BRIGHTTRAY_LANG=zh` to force one (also handy for screenshots). All strings live in one table in `bright.c`; additional translations are welcome.
 
 ## Build
 
@@ -111,6 +125,13 @@ Other small native tools worth looking at: [lumos_ddc](https://github.com/sforti
 ## Contributing
 
 Bug reports are especially welcome for monitor models that reject DDC writes. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and include the output of `BrightTray.exe test`.
+
+If your monitor works, please add it to the [Verified monitors](docs/VERIFIED-MONITORS.md) table with the *Verified monitor* issue form. DDC/CI behaviour varies a lot between panels, and that table is the only way for other people to know before downloading.
+
+## Further reading
+
+- [DDC/CI pitfalls: five decisions and two Win32 traps](docs/DDC-CI-PITFALLS.md) — why writing to a monitor needs a worker thread, throttling, read-back and a single writer, with the measurements behind each choice.
+- [docs/DESIGN.md](docs/DESIGN.md) — footprint measurements, the full write pipeline, and known technical debt.
 
 ## License
 

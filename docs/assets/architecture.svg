@@ -8,22 +8,22 @@
     </marker>
   </defs>
   <rect x="0.5" y="0.5" width="919" height="439" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="24" y="32" font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">BrightTray-Win32 · 单进程架构</text>
-  <text x="24" y="52" font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif" font-size="12" fill="#64748b">一个隐藏主窗口 · 一条写线程 · 无运行时 · 无网络 · 无服务</text>
+  <text x="24" y="32" font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">BrightTray-Win32 · single-process architecture</text>
+  <text x="24" y="52" font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif" font-size="12" fill="#64748b">One hidden window · one writer thread · no runtime · no network · no service</text>
 
   <g font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif">
     <!-- inputs -->
     <rect x="40" y="70" width="250" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
-    <text x="165" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">托盘图标滚轮</text>
-    <text x="165" y="112" text-anchor="middle" font-size="11" fill="#3b82f6">±5% · 无需打开面板</text>
+    <text x="165" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">Scroll on tray icon</text>
+    <text x="165" y="112" text-anchor="middle" font-size="11" fill="#3b82f6">±5% · no popup needed</text>
 
     <rect x="335" y="70" width="250" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
-    <text x="460" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">单击 / 命令行</text>
+    <text x="460" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">Click / CLI</text>
     <text x="460" y="112" text-anchor="middle" font-size="11" fill="#3b82f6">BrightTray.exe set 40</text>
 
     <rect x="630" y="70" width="250" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
-    <text x="755" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">鼠标 / 键盘事件</text>
-    <text x="755" y="112" text-anchor="middle" font-size="11" fill="#3b82f6">WH_MOUSE_LL · 面板显示期钩子</text>
+    <text x="755" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">Mouse / keyboard events</text>
+    <text x="755" y="112" text-anchor="middle" font-size="11" fill="#3b82f6">WH_MOUSE_LL · hook while popup is open</text>
 
     <path d="M165 126 L165 152" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
     <path d="M460 126 L460 152" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
@@ -31,32 +31,32 @@
 
     <!-- message loop -->
     <rect x="40" y="156" width="840" height="62" rx="8" fill="#f1f5f9" stroke="#94a3b8"/>
-    <text x="460" y="181" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">隐藏主窗口 · Win32 消息循环</text>
-    <text x="460" y="202" text-anchor="middle" font-size="11.5" fill="#475569">NOTIFYICON_VERSION_4 · 单击去重 · WM_SETPCT 同会话投递 · 单实例互斥体 Local\BrightTray.Lock</text>
+    <text x="460" y="181" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Hidden main window · Win32 message loop</text>
+    <text x="460" y="202" text-anchor="middle" font-size="11.5" fill="#475569">NOTIFYICON_VERSION_4 · click dedup · WM_SETPCT handoff · single-instance mutex</text>
 
     <path d="M250 218 L250 248" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
     <path d="M685 218 L685 248" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
-    <text x="258" y="238" font-size="10.5" fill="#64748b">显示 / 重绘</text>
-    <text x="693" y="238" font-size="10.5" fill="#64748b">登记最新目标值</text>
+    <text x="258" y="238" font-size="10.5" fill="#64748b">Show / repaint</text>
+    <text x="693" y="238" font-size="10.5" fill="#64748b">Store latest target</text>
 
     <!-- UI and worker -->
     <rect x="40" y="252" width="390" height="82" rx="8" fill="#fffbeb" stroke="#fbbf24"/>
-    <text x="235" y="277" text-anchor="middle" font-size="14.5" font-weight="700" fill="#78350f">UI · 全 GDI 自绘</text>
-    <text x="235" y="297" text-anchor="middle" font-size="11.5" fill="#92400e">100×198 面板滑块 · OSD 百分比浮层</text>
-    <text x="235" y="316" text-anchor="middle" font-size="11.5" fill="#92400e">WS_EX_NOACTIVATE · 永不抢焦点</text>
+    <text x="235" y="277" text-anchor="middle" font-size="14.5" font-weight="700" fill="#78350f">UI · pure GDI drawing</text>
+    <text x="235" y="297" text-anchor="middle" font-size="11.5" fill="#92400e">100x198 slider popup · OSD overlay</text>
+    <text x="235" y="316" text-anchor="middle" font-size="11.5" fill="#92400e">WS_EX_NOACTIVATE · never takes focus</text>
 
     <rect x="490" y="252" width="390" height="82" rx="8" fill="#f0fdf4" stroke="#4ade80"/>
-    <text x="685" y="277" text-anchor="middle" font-size="14.5" font-weight="700" fill="#14532d">写线程 · 唯一写者</text>
-    <text x="685" y="297" text-anchor="middle" font-size="11.5" fill="#166534">最新值覆盖队列 · 50 ms 限流 / 退避至 500 ms</text>
-    <text x="685" y="316" text-anchor="middle" font-size="11.5" fill="#166534">写后 2.5 s 回读校验并补写 · 超时即认账</text>
+    <text x="685" y="277" text-anchor="middle" font-size="14.5" font-weight="700" fill="#14532d">Writer thread · single writer</text>
+    <text x="685" y="297" text-anchor="middle" font-size="11.5" fill="#166534">Latest-value-wins queue · 50 ms throttle / backoff to 500 ms</text>
+    <text x="685" y="316" text-anchor="middle" font-size="11.5" fill="#166534">Read back within 2.5 s, retry once · then give up</text>
 
     <path d="M430 293 L486 293" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowd)"/>
-    <text x="458" y="286" text-anchor="middle" font-size="10" fill="#64748b">目标值</text>
+    <text x="458" y="286" text-anchor="middle" font-size="10" fill="#64748b">Target value</text>
     <path d="M685 334 L685 362" stroke="#64748b" stroke-width="1.6" marker-end="url(#arrow)"/>
 
     <!-- hardware chain -->
     <rect x="40" y="366" width="840" height="52" rx="8" fill="#f5f3ff" stroke="#a78bfa"/>
-    <text x="460" y="388" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4c1d95">dxva2.dll（运行时 LoadLibrary，无链接期依赖） → DDC/CI VCP 0x10 → 显示器硬件背光</text>
-    <text x="460" y="406" text-anchor="middle" font-size="11" fill="#6d28d9">hPhysicalMonitor 可为 0，有效性只认自维护的 ok 标志</text>
+    <text x="460" y="388" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4c1d95">dxva2.dll (loaded at runtime, no link-time dependency) -> DDC/CI VCP 0x10 -> monitor backlight</text>
+    <text x="460" y="406" text-anchor="middle" font-size="11" fill="#6d28d9">hPhysicalMonitor may be 0; validity comes from the ok flag</text>
   </g>
 </svg>

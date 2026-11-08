@@ -15,13 +15,13 @@ Please include: Windows version, monitor model and connection type, steps to rep
 
 ## Verifying a release
 
-CI refuses to publish a binary unless it matches the committed golden hash in `tests/expected-binary.sha256` (35,328 bytes, SHA-256 `9c4ef1c65b0fae0112a00ce4c7903ade3f2535491bd70edc77ee56a7ab7e8082`). Tagged releases additionally carry a build provenance attestation:
+CI refuses to publish a binary unless it matches the committed golden hash in `tests/expected-binary.sha256` (36,352 bytes, SHA-256 `4fbe696dd4c316290ae31448ef4e06b29772a3e788bb52a1a7a41aec37106b06`). Tagged releases additionally carry a build provenance attestation:
 
 ```
 gh attestation verify BrightTray.exe --owner <your-account>
 ```
 
-The compiler archive itself is hash-pinned in the workflow, so a substituted toolchain cannot silently alter the output. You can also rebuild locally with TinyCC 0.9.27 win64 and compare byte-for-byte. An unsigned 35 KB binary that installs a low-level hook can trigger heuristic antivirus alerts; the source and the deterministic recipe exist precisely so the binary can be checked independently.
+The compiler archive itself is hash-pinned in the workflow, so a substituted toolchain cannot silently alter the output. You can also rebuild locally with TinyCC 0.9.27 win64 and compare byte-for-byte. An unsigned 36 KB binary that installs a low-level hook can trigger heuristic antivirus alerts; the source and the deterministic recipe exist precisely so the binary can be checked independently.
 
 ## What this program does and does not do
 

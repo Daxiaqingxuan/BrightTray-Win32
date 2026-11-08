@@ -2,11 +2,11 @@
 
 [English README](README.md)
 
-极轻量的 Windows 屏幕亮度托盘工具，**35 KB 单文件、免安装、无运行时**，通过 DDC/CI 直接调节显示器硬件背光。常驻内存 0.24 MB（私有工作集）/ 0.5–1.0 MB（工作集），5 线程，空闲 CPU 0%。
+极轻量的 Windows 屏幕亮度托盘工具，**36 KB 单文件、免安装、无运行时**，通过 DDC/CI 直接调节显示器硬件背光。常驻内存 0.24 MB（私有工作集）/ 0.5–1.0 MB（工作集），5 线程，空闲 CPU 0%。
 
 它是 [Twinkle Tray](https://github.com/xanderfrangos/twinkle-tray) 的极简替代品：没有 Electron、.NET、安装器、后台服务、联网或遥测。代价也很明确——不做自动亮度、色温、日程曲线等功能。
 
-> **命名说明**：GitHub 上已有两个无关的 `BrightTray` 仓库（gardod/BrightTray 为 C#，Ganakas/BrightTray 为 Tauri）。本项目定名 **BrightTray-Win32**，后缀表明这是纯 C / Win32 实现；2026-11-07 按仓库名检索该名称无冲突，创建仓库时可直接使用。
+> **命名说明**：GitHub 上已有两个无关的 `BrightTray` 仓库。本项目定名 **BrightTray-Win32**，后缀表明这是纯 C / Win32 实现。
 
 ## 它怎么做到的
 
@@ -23,6 +23,18 @@
 
 **关于内存台阶的根因**：早期版本里面板为了接收 Esc / ↑ / ↓ 必须拿到焦点，而窗口一旦获得焦点，Windows 就会把输入法框架注入进程（实测 QQPinyin.ime 13.5 MB、MSCTF、textinputframework），线程 5→12、工作集跳到 3–6 MB 且不再回落。改用 NOACTIVATE 后，打开面板实测模块 28→29、线程仍是 5、私有提交约 2.3 MB，输入法只剩系统自带的 MSCTF。
 
+## 真实截图
+
+Windows 11、100% DPI、英文界面下的窗口实拍（未做修饰）：
+
+![单显示器亮度面板](docs/assets/screenshot-popup.png)
+
+![顶部百分比 OSD](docs/assets/screenshot-osd.png)
+
+![英文右键菜单](docs/assets/screenshot-menu.png)
+
+图片由运行中的程序（`BrightTray.exe shot` 配合 `BRIGHTTRAY_LANG=en`）按原始像素直接截取，不是示意图。单显示器面板本身只有百分比和滑块、没有文字，所以语言差异主要体现在右键菜单、托盘提示、多显示器列名和 OSD 文案（英文 `72%`，中文「亮度 72%」）。
+
 ## 架构与界面
 
 ![BrightTray-Win32 单进程架构](docs/assets/architecture.svg)
@@ -31,7 +43,7 @@
 
 ![托盘弹窗与 OSD 示意图](docs/assets/popup.svg)
 
-两张都是为本仓库绘制的矢量示意图，不是截图。面板在 100% DPI 下单显示器为 100×198 像素；多显示器时高度 215 像素，OSD 是短暂出现、不抢焦点的顶部浮层。
+两张 SVG 是带标注的矢量示意图，不是截图。面板在 100% DPI 下单显示器为 100×198 像素；多显示器时高度 215 像素。
 
 ## 实测数据
 
@@ -42,7 +54,7 @@ WorkingSet64   : 0.5 – 1.0 MB   (刚启动 0.97，开关过面板后回落到 
 PrivateBytes   : 2.1 MB         (提交量，含保留空间)
 线程 / 句柄    : 5 / 153
 CPU            : 空闲 0%
-可执行文件    : 35,328 字节，仅依赖系统 DLL
+可执行文件    : 36,352 字节，仅依赖系统 DLL
 ```
 
 连续开关面板 40 轮、滚轮 20 次后：模块数稳定 29、线程 5、句柄 125→128 后平稳、私有提交 2328→2332 KB（无泄漏）。单显示器面板 100×198 像素；多显示器时每增一屏宽 60 像素、高度 215 像素。
@@ -65,6 +77,8 @@ BrightTray.exe set 40     :: 把所有显示器设为 40% 后退出
 BrightTray.exe test       :: 自检（枚举显示器、读写亮度验证），写入 BrightTray_test.log
 BrightTray.exe shot       :: 调试用：启动后立即弹出面板
 ```
+
+界面默认英文，简体中文（zh-CN）系统自动显示中文。可用环境变量 `BRIGHTTRAY_LANG=en` / `zh` 强制指定，截英文图时很有用。
 
 `set` 可用于快捷方式、计划任务、AutoHotkey，例如做「一键夜间模式」：`BrightTray.exe set 20`。
 
@@ -114,7 +128,7 @@ CI 在每次 push 时先跑[仓库测试与源码检查](tests/README.md)，再�
 1. **`hPhysicalMonitor` 可能等于 0，不能拿它判空**。`GetPhysicalMonitorsFromHMONITOR` 在某些显卡/驱动组合下返回的句柄就是 0（索引 0），读写 DDC 完全正常。早期代码写了 `if (!m->hpm) return FALSE;`，每次写硬件都被静默跳过，表现为「拖滑块数字在动、屏幕一点不变」。有效性只能看自维护的 `ok` 标志。
 2. **托盘图标协议版本不同，报文布局正好相反**。注册 `NOTIFYICON_VERSION_4` 后 `wp` = 坐标、`lp` 低字 = 事件；旧协议相反。混用的结果是「点图标永远没反应」。且 v4 下一次单击会连发 `WM_LBUTTONUP` 和 `NIN_SELECT`，必须去重，否则「刚打开就被自己关掉」。
 
-更多设计决策与踩坑记录见 [docs/DESIGN.md](docs/DESIGN.md)。
+更多设计决策与踩坑记录见 [DDC/CI 踩坑长文](docs/DDC-CI-PITFALLS.md) 与 [docs/DESIGN.md](docs/DESIGN.md)。
 
 ## 已知限制
 
@@ -124,8 +138,8 @@ CI 在每次 push 时先跑[仓库测试与源码检查](tests/README.md)，再�
 - 只调硬件背光，不做 gamma 软件调光（那会牺牲对比度）。
 - 面板出现在鼠标所在显示器工作区，暂不支持自定义位置与尺寸。
 - 亮度值不持久化，始终以显示器当前实际值为准（外部改动后重开面板会自动同步）。
-- 界面文案目前只有中文，英文界面与 i18n 在计划中。
+- 界面目前只有英文与简体中文两种文案，切换依据系统 UI 语言或 `BRIGHTTRAY_LANG` 环境变量；其他语言欢迎贡献翻译。
 
 ## 许可证与第三方声明
 
-[MIT](LICENSE)。第三方声明见 [NOTICE.md](NOTICE.md)。欢迎提交 issue（尤其是拒收 DDC 写入的显示器型号），请附 `BrightTray.exe test` 的输出，见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+[MIT](LICENSE)。第三方声明见 [NOTICE.md](NOTICE.md)。欢迎提交 issue（尤其是拒收 DDC 写入的显示器型号），请附 `BrightTray.exe test` 的输出，见 [CONTRIBUTING.md](CONTRIBUTING.md)。如果你的显示器工作正常，也请用「Verified monitor」模板把它加进 [已验证机型表](docs/VERIFIED-MONITORS.md)。

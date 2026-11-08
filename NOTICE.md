@@ -5,7 +5,7 @@
 This project is compiled with **TinyCC (TCC) 0.9.27 win64**, which is distributed under the **GNU Lesser General Public License v2.1** (Copyright (c) 2001-2018 Fabrice Bellard, https://bellard.org/tcc/).
 
 - TCC binaries are **not** included in this repository and are **not** shipped inside `BrightTray.exe`.
-- CI downloads the official win64 binary archive from a Savannah mirror at build time and discards it afterwards. The archive is pinned by SHA-256 `34a721949a2583fdff725312da092fa0f5f1f284b702e6f811c6954714faabb2` (489,586 bytes; both mirrors served the identical file on 2026-11-07). A mismatching download is rejected before extraction.
+- CI downloads the official win64 binary archive from a Savannah mirror at build time and discards it afterwards. The archive is pinned by SHA-256 `34a721949a2583fdff725312da092fa0f5f1f284b702e6f811c6954714faabb2` (489,586 bytes; both mirrors served the identical file). A mismatching download is rejected before extraction.
 - TCC is used purely as a compiler. Nothing from TCC's source or headers is copied into the released executable beyond what the compiler normally emits; the resulting program is distributed under this project's MIT license.
 - If you redistribute a TCC toolchain together with this source, comply with LGPL-2.1 (include the license text and make the corresponding TCC source available).
 

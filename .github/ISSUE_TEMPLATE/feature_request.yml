@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        The project's design goal is a ~35 KB, single-file, dependency-free tray
+        The project's design goal is a ~36 KB, single-file, dependency-free tray
         utility. Features that require a runtime, a config file, a service, or a
         large UI framework will usually be declined. Small Win32-level
         improvements and hardware-compatibility fixes are very welcome.

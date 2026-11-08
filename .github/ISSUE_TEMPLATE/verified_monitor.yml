@@ -1,0 +1,86 @@
+name: Verified monitor
+description: Report a monitor that works (or misbehaves) with BrightTray, so it can be added to the compatibility table.
+title: "[Monitor] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing real hardware. DDC/CI behaviour is panel-specific,
+        and this report goes into [docs/VERIFIED-MONITORS.md](../../blob/main/docs/VERIFIED-MONITORS.md).
+
+        Please do not paste personal paths or user names. `BrightTray.exe test`
+        writes `BrightTray_test.log` next to the exe and does not contain any.
+  - type: input
+    id: model
+    attributes:
+      label: Monitor model / EDID ID
+      description: Retail model name, or the vendor/model strings reported by WMI.
+      placeholder: "e.g. Dell U2723QE, or LHC / P30A2M (DISPLAY\\LHCFFFF)"
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - DisplayPort
+        - HDMI
+        - DVI
+        - USB-C / Thunderbolt
+        - via dock or KVM
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: resolution
+    attributes:
+      label: Resolution and scaling
+      placeholder: "e.g. 2560x1080 @ 100%"
+    validations:
+      required: true
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU
+      placeholder: "e.g. AMD Radeon RX 7900 XTX"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "e.g. Windows 11 23H2"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: BrightTray version
+      placeholder: "e.g. v0.1.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Working - writes, read-back and restore all succeed
+        - Working with caveats - describe below
+        - Not working - describe below
+    validations:
+      required: true
+  - type: textarea
+    id: selftest
+    attributes:
+      label: Output of `BrightTray.exe test` (optional but very helpful)
+      description: Run it from a command prompt in the exe folder and paste the log here.
+      render: text
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Clamping, HDR mode, DDC/CI setting in the OSD menu, a KVM/dock, or anything unusual.
+    validations:
+      required: false

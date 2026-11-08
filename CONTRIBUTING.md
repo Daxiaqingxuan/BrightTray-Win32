@@ -11,7 +11,7 @@ This project has one defining constraint: **a tray utility should stay under 1 M
 - additional Win32 common controls or UI frameworks;
 - telemetry, networking, or an update checker.
 
-Features that are welcome: more robust monitor handling, a WMI backend for laptop panels (behind a clean abstraction), i18n, accessibility, a hook-free fallback mode, and tests.
+Features that are welcome: more robust monitor handling, a WMI backend for laptop panels (behind a clean abstraction), additional UI languages, accessibility, a hook-free fallback mode, and tests.
 
 ## Development setup
 
@@ -21,7 +21,7 @@ Features that are welcome: more robust monitor handling, a WMI backend for lapto
 4. Run `python tests/run_tests.py` and `python tests/lint_source.py`. Both are standard-library-only, cross-platform, and never touch hardware. See [tests/README.md](tests/README.md) for what they protect.
 5. Python 3 (no third-party packages) is only needed if you change the tray icon: `python gen_icon.py` regenerates `icon_data.h`.
 
-Source style: plain C as understood by TCC, tab-free 4-space indentation, UTF-8 source with Chinese UI strings converted at runtime via `MultiByteToWideChar`. `bright.c` intentionally stays a single translation unit; if you split it into modules, keep the zero-dependency, single-exe property.
+Source style: plain C as understood by TCC, tab-free 4-space indentation, UTF-8 source. All UI strings live in the `UI_TEXT` table (English / Simplified Chinese) and are converted to UTF-16 at runtime via `MultiByteToWideChar`; keep new strings short, because the popup column is only 76 px wide. `bright.c` intentionally stays a single translation unit; if you split it into modules, keep the zero-dependency, single-exe property.
 
 ## Before opening a pull request
 

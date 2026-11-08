@@ -30,7 +30,7 @@ BINARY_EXTS = {
     ".exe", ".dll", ".a", ".lib", ".obj", ".o", ".pdb", ".ilk", ".dmp",
     ".zip", ".7z", ".rar", ".ico", ".pyc", ".so", ".dylib", ".bin",
 }
-SOURCE_HASH = "53a20233cc7503d231f11f278a31d3aa09adde3ab2468fd1bdac91ddfeeef917"
+SOURCE_HASH = "8ff57f3d53fc79605851ac5515abeaff77d24b4e64024a7503de6b5a33de46a3"
 TCC_ZIP_SHA256 = "34a721949a2583fdff725312da092fa0f5f1f284b702e6f811c6954714faabb2"
 
 
@@ -380,7 +380,7 @@ class Workflows(unittest.TestCase):
             self.skipTest("no local build/ directory; CI checks this on Windows")
         expected = read(ROOT / "tests" / "expected-binary.sha256").strip()
         self.assertEqual(sha256(built), expected)
-        self.assertEqual(built.stat().st_size, 35328)
+        self.assertEqual(built.stat().st_size, 36352)
 
 
 def main() -> int:

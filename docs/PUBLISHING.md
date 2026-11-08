@@ -1,30 +1,26 @@
-# Publishing checklist
+# Publishing and maintenance notes
 
-This folder is a **ready-to-push source repository**. It was built as a copy:
-the original development folder's source, compiler and scripts were left in
-place, and no startup entry was changed. On 2026-11-08 the locally running
-`BrightTray.exe` was backed up, refreshed to this repository's current build
-(the popup-label removal) and restarted. The `HKCU\...\Run` entry and
-`tools\tcc` are unchanged. Nothing in this folder runs at Windows startup;
-the running app lives in the development folder.
+This folder is the source repository behind the published `BrightTray-Win32`
+project. It was assembled as a clean copy: the original development folder's
+source, compiler, scripts and startup entry were left in place, and nothing in
+this repository runs at Windows startup.
 
-**Status: all local blockers cleared (verified 2026-11-08).** The only remaining
-step needs your GitHub account, because no assistant can log in for you.
+`v0.1.0` and `v0.1.1` are published; `build` and `codeql` are green on `main`.
+What follows is the maintainer's record of how the repository was prepared and
+how to repeat a publish from scratch — not a to-do list for a visitor.
 
-## What is already done
+## What is in place
 
-- **Name is final: `BrightTray-Win32`.** A GitHub `in:name` search returned zero
-  repositories with that name. The two existing `BrightTray` repositories are
-  unrelated (one C#, one Tauri), so no rename is needed.
-- **No placeholders in any active file.** `config.yml` deliberately has no
-  contact links, since those would hard-code an account URL that does not exist
-  yet; a snippet for enabling them later is near the end of this file.
-  `LICENSE` reads `Copyright (c) 2026 BrightTray-Win32 contributors`, a valid
-  MIT notice; replace it with your own name before the first push if you prefer.
-- **Repository hygiene**: `git init` done, branch renamed to `main`, commits
-  exist, no binaries / backups / logs are tracked. `.gitignore` forces LF via
-  `.gitattributes` (the machine has `core.autocrlf=true`, which would otherwise
-  rewrite the checksum files on checkout).
+- **Name: `BrightTray-Win32`.** The suffix distinguishes this pure-C Win32
+  implementation from two unrelated projects using the shorter name.
+- **No placeholders in any active file.** `config.yml` has no contact links
+  that would hard-code an account URL; a snippet for adding them is near the
+  end of this file. `LICENSE` reads `Copyright (c) 2026 BrightTray-Win32
+  contributors`, a valid MIT notice.
+- **Repository hygiene**: branch `main`, no binaries / backups / logs tracked.
+  `.gitattributes` keeps everything LF on checkout; a Windows machine with
+  `core.autocrlf=true` would otherwise rewrite `bright.c` and break the
+  reproducible source hash.
 - **CI**: `build.yml` (verify -> build -> release) and `codeql.yml`. All 10
   `uses:` entries are pinned to full commit SHAs; every one was checked against
   the GitHub API and belongs to the tagged major version named in the comment.
@@ -33,20 +29,16 @@ step needs your GitHub account, because no assistant can log in for you.
 - **Tests**: 30 standard-library checks plus a source lint, all green locally.
   They guard the source design invariants, hygiene/privacy, documentation
   links, action pinning, and the golden reproducibility hash.
-- **Docs**: English and Chinese README, architecture and popup diagrams under
-  `docs/assets/`, design and publishing notes, governance documents, issue and
-  PR templates. All local Markdown links resolve.
-- **Popup label removed (2026-11-08)**: the single-monitor caption is gone and
-  the popup is now 100x198 px (215 px with multiple monitors, which keep their
-  names). Source hash, golden binary hash, CI source pin, both READMEs,
-  `docs/DESIGN.md`, `SECURITY.md` and `docs/assets/popup.svg` were all updated
-  together; two independent TCC builds produced the identical binary.
+- **Docs**: English and Chinese README, real screenshots plus architecture and
+  popup diagrams under `docs/assets/`, design notes, the [DDC/CI pitfalls](DDC-CI-PITFALLS.md)
+  article, a [verified-monitors table](VERIFIED-MONITORS.md), governance
+  documents, issue and PR templates. All local Markdown links resolve.
 
 One README link is intentionally GitHub-relative: `../../releases` in
-`README.md`. It resolves to the Releases page after publishing and cannot be
-checked locally. No other local documentation link is broken.
+`README.md`. It resolves to the Releases page and cannot be checked locally.
+No other local documentation link is broken.
 
-## The two account-only steps
+## Repeating a publish from scratch
 
 ### 1. Create the empty repository
 
@@ -55,7 +47,9 @@ On GitHub, create a **public**, **empty** repository named exactly
 `.gitignore` — this repository already has all three, and a pre-existing commit
 would make the first push a non-fast-forward.
 
-Add topics after publishing: `ddc-ci, brightness, windows, win32, tray, c`.
+The repository description and topics live in Settings, not in the source
+tree. Current topics: `brightness`, `ddc-ci`, `win32`, `tray`, `windows`,
+`c-language`, `monitor`, `no-dependencies`.
 
 ### 2. Create a throwaway token, then run the helper
 
@@ -135,7 +129,7 @@ GitHub-hosted runners are the only part that cannot be pre-run offline.
    broken invariant, untracked binary, broken doc link, or unpinned action.
 2. `build` (Windows): downloads TinyCC 0.9.27 win64, verifies its SHA-256,
    installs `lib/*.def`, compiles `bright.c`, compares the result to
-   `tests/expected-binary.sha256` (35,328 bytes), publishes the hash and size
+   `tests/expected-binary.sha256` (36,352 bytes), publishes the hash and size
    to the job summary, generates build provenance, and uploads the exe plus
    its checksum as an artifact.
 3. `codeql` (Linux, on push/PR and weekly): C/C++ analysis with
@@ -231,7 +225,8 @@ The original development folder contains material that must not be published:
 - `tools/tcc/`: a full LGPL-2.1 compiler distribution. Redistributing it would
   require shipping the license text and offering the corresponding source. CI
   downloads TCC at build time instead — see [NOTICE.md](../NOTICE.md);
-- all build outputs, debug tools, screenshots, A/B probes and `.bak` files.
+- all build outputs, debug tools, A/B probes and `.bak` files. The two
+  curated screenshots in `docs/assets/` are the only intentional images.
 
 **Push `github-release\`, never the workspace root.** The root still contains
 all of the above and would score around 28/100 for open-source readiness.

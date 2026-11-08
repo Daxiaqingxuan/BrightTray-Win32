@@ -52,7 +52,7 @@ jobs:
       - name: Verify source bytes after checkout
         shell: pwsh
         run: |
-          $expected = '53a20233cc7503d231f11f278a31d3aa09adde3ab2468fd1bdac91ddfeeef917'
+          $expected = '8ff57f3d53fc79605851ac5515abeaff77d24b4e64024a7503de6b5a33de46a3'
           $actual = (Get-FileHash 'bright.c' -Algorithm SHA256).Hash.ToLowerInvariant()
           if ($actual -ne $expected) {
             throw "bright.c mismatch: $actual (expected $expected). Check .gitattributes line endings."
@@ -121,7 +121,7 @@ jobs:
           if ($actual -ne $expected) {
             throw "Binary hash mismatch: $actual (expected $expected). Reproducibility regressed."
           }
-          if ($size -ne 35328) { throw "Unexpected size: $size (expected 35328)" }
+          if ($size -ne 36352) { throw "Unexpected size: $size (expected 36352)" }
           "$actual  BrightTray.exe" | Set-Content -Path 'build/BrightTray.exe.sha256' -Encoding ascii
           "SHA256 : $actual" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
           "Size   : $size bytes" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append

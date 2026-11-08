@@ -18,6 +18,7 @@
 #define _UNICODE
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <stdlib.h>
 #include "icon_data.h"
 
 /* ---------------------------------------------------------------------------
@@ -216,25 +217,65 @@ static int       g_trayWheelAcc;
 static HANDLE    g_log;
 
 
-/* UTF-8 源码中的中文文案，运行时转宽字符 (TCC 不做窄字符转码) */
+/* UI strings are UTF-8 in the source and converted to UTF-16 at runtime (TCC
+ * does no narrow->wide transcoding). English is the default; Simplified
+ * Chinese is chosen automatically on zh-CN systems. BRIGHTTRAY_LANG=en|zh
+ * overrides the detection, e.g. to capture English screenshots on a Chinese
+ * Windows. Keep each English string short: the popup column is 76 px wide and
+ * the OSD window is 168 px wide. */
 static WCHAR w_exit[16], w_autostart[32], w_osdfmt[32], w_monfmt[32],
              w_unsupported[16], w_tip[64], w_running[64], w_noresp[16];
+
+enum { LANG_EN = 0, LANG_ZH = 1 };
+enum { S_EXIT, S_AUTOSTART, S_OSDFMT, S_MONFMT, S_UNSUPPORTED,
+       S_TIP, S_RUNNING, S_NORESP, S_COUNT };
+
+static const char *const UI_TEXT[S_COUNT][2] = {
+    { "Exit",                           "退出" },
+    { "Start with Windows",             "开机自启动" },
+    { "%d%%",                           "亮度 %d%%" },
+    { "Display %d",                     "显示器 %d" },
+    { "No DDC",                         "不支持" },
+    { "BrightTray - scroll on the tray icon to adjust brightness",
+                                        "BrightTray 屏幕亮度（图标上滚动可调）" },
+    { "BrightTray is already running", "BrightTray 已在运行" },
+    { "No response",                    "无响应" },
+};
+static int g_lang = LANG_EN;
 
 static void ToW(const char *u8, WCHAR *out, int cch)
 {
     MultiByteToWideChar(CP_UTF8, 0, u8, -1, out, cch);
 }
 
+/* TCC's minimal winnls.h omits this prototype; kernel32 exports it. */
+extern WORD WINAPI GetUserDefaultUILanguage(void);
+
+static void ChooseLang(void)
+{
+    const char *env;
+    WORD id = GetUserDefaultUILanguage();
+    /* zh-CN only; zh-TW / zh-HK fall back to English rather than showing
+     * Simplified glyphs to a Traditional Chinese user. */
+    g_lang = (PRIMARYLANGID(id) == LANG_CHINESE &&
+              SUBLANGID(id) == SUBLANG_CHINESE_SIMPLIFIED) ? LANG_ZH : LANG_EN;
+    env = getenv("BRIGHTTRAY_LANG");
+    if (env) {
+        if (env[0] == 'z' || env[0] == 'Z') g_lang = LANG_ZH;
+        else if (env[0] == 'e' || env[0] == 'E') g_lang = LANG_EN;
+    }
+}
+
 static void InitStrings(void)
 {
-    ToW("退出", w_exit, 16);
-    ToW("开机自启动", w_autostart, 32);
-    ToW("亮度 %d%%", w_osdfmt, 32);
-    ToW("显示器 %d", w_monfmt, 32);
-    ToW("不支持", w_unsupported, 16);
-    ToW("BrightTray 屏幕亮度（图标上滚动可调）", w_tip, 64);
-    ToW("BrightTray 已在运行", w_running, 64);
-    ToW("无响应", w_noresp, 16);
+    ToW(UI_TEXT[S_EXIT][g_lang],        w_exit, 16);
+    ToW(UI_TEXT[S_AUTOSTART][g_lang],   w_autostart, 32);
+    ToW(UI_TEXT[S_OSDFMT][g_lang],      w_osdfmt, 32);
+    ToW(UI_TEXT[S_MONFMT][g_lang],      w_monfmt, 32);
+    ToW(UI_TEXT[S_UNSUPPORTED][g_lang], w_unsupported, 16);
+    ToW(UI_TEXT[S_TIP][g_lang],         w_tip, 64);
+    ToW(UI_TEXT[S_RUNNING][g_lang],     w_running, 64);
+    ToW(UI_TEXT[S_NORESP][g_lang],      w_noresp, 16);
 }
 
 static int Clamp(int v, int lo, int hi)
@@ -1162,6 +1203,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR cmd, int show)
 
     (void)hPrev; (void)show;
     g_hInst = hInst;
+    ChooseLang();
     InitStrings();
     InitializeCriticalSection(&g_cs);
 

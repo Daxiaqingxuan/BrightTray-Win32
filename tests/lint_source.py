@@ -104,10 +104,10 @@ def main() -> int:
                 warnings.append(
                     f"line {n}: return value of {call}() is not checked")
 
-    chinese = re.findall(r'L"([^"]*[\u4e00-\u9fff][^"]*)"', code)
+    chinese = re.findall(r'"([^"\n]*[\u4e00-\u9fff][^"\n]*)"', code)
     if chinese:
-        infos.append(f"{len(chinese)} wide string literals contain Chinese UI text "
-                     "(i18n is still open; see CHANGELOG Known limitations)")
+        infos.append(f"{len(chinese)} UTF-8 literals carry Chinese UI text "
+                     "(bilingual UI_TEXT table; see docs/DESIGN.md)")
 
     for marker in ("TODO", "FIXME", "XXX", "HACK"):
         for n, line in enumerate(lines, 1):

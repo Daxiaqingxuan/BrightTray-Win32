@@ -3,6 +3,8 @@
 This document explains *why* `bright.c` looks the way it does. Most of the
 non-obvious code is a reaction to a measured failure, not a stylistic choice.
 If you plan to change the hardware-write path, read this first.
+Sections 2 and 3 are also available as a standalone article:
+[DDC/CI pitfalls](DDC-CI-PITFALLS.md).
 
 All measurements below were taken on one Windows 11 machine with a Ryzen 5
 7600, an RX 7900 XTX and one 2560x1080 external monitor over DDC/CI. They are
@@ -37,7 +39,7 @@ reproducible on that setup; they are not a benchmark across hardware.
   "not supported" instead of failing to load.
 - All UI is GDI: no common controls, no fonts to install, no resources beyond
   the icon bytes embedded in `icon_data.h`.
-- The binary produced by TinyCC 0.9.27 win64 is **35,328 bytes**, with no
+- The binary produced by TinyCC 0.9.27 win64 is **36,352 bytes**, with no
   installer, no config file, no service and no network code.
 
 ### Thread and object budget (measured)
@@ -184,7 +186,7 @@ Taskbar -> Other system tray icons* to pin it.
 | Auto brightness, ambient sensor, schedules | Needs a polling timer and a settings store, which conflicts with the 0% idle CPU / no-config-file goal. |
 | Contrast, color temperature, input switching | Scope creep for a single-purpose tray tool. |
 | Persisted brightness | The monitor's real current value is always the source of truth; external changes are picked up when the popup reopens. |
-| Full i18n | UI strings are Chinese only for now. This is a real adoption blocker for a public repository. |
+| More UI languages | English and Simplified Chinese only, chosen from `GetUserDefaultUILanguage()` with a `BRIGHTTRAY_LANG` override. A full translation framework would add files, a parser and complexity to a single-file program. |
 | Per-Monitor DPI v2 | Currently System-DPI aware; mixed-DPI multi-monitor setups may render softly. |
 
 ---
@@ -201,14 +203,18 @@ These are open items, not claims of correctness:
    because TCC's minimal headers omit `shellapi.h` and differ in layout. They
    are binary-compatible with the SDK on the tested toolchain but are a
    portability risk with other compilers.
-4. No automated tests. Validation is manual: `BrightTray.exe test`, the 40-cycle
-   open/close leak check, and a rebuild-for-byte-identity check.
+4. No hardware-in-the-loop automation. CI runs the source/repository test
+   suite, but DDC/CI behaviour still has to be checked manually with
+   `BrightTray.exe test`, the 40-cycle open/close leak check and a
+   rebuild-for-byte-identity check.
 5. Crash diagnostics are a single-line dump; no minidump, no symbolication.
 6. No version resource in the exe, so Windows Explorer shows no file version.
 7. The `.def` files in `lib/` are generated from one machine's system DLLs;
    contributors on a different Windows build may need to regenerate them with
    `tools/mkdef.py`.
-8. Chinese-only UI strings and no translation infrastructure.
+8. Only two UI locales, with no gettext-style translation pipeline. Adding a
+   language means editing the `UI_TEXT` table in `bright.c` and rebuilding the
+   (hash-pinned) binary.
 
 Security-relevant design choices are in [SECURITY.md](../SECURITY.md); the
 low-level hook and the unauthenticated local `PostMessage` channel are
@@ -219,10 +225,10 @@ documented there rather than hidden.
 ## 7. Build reproducibility
 
 `bright.c` SHA-256:
-`53a20233cc7503d231f11f278a31d3aa09adde3ab2468fd1bdac91ddfeeef917`
+`8ff57f3d53fc79605851ac5515abeaff77d24b4e64024a7503de6b5a33de46a3`
 
 Rebuilding that exact source with TinyCC 0.9.27 win64 plus the `.def` files in
-`lib/` yields a byte-for-byte identical 35,328-byte exe. There is no timestamp,
+`lib/` yields a byte-for-byte identical 36,352-byte exe. There is no timestamp,
 no random seed, and no absolute path embedded. CI publishes the SHA-256 of
 every build so a user can verify a downloaded binary against a fresh build.
 
@@ -240,7 +246,7 @@ glyph, no Pillow) and is committed so that building needs only a C compiler.
 | lumos_ddc | pure C / Win32, ~200 KB | DDC/CI + WMI, schedule, idle dimming, Home Assistant, CLI, screen-reader support, CI |
 | MonitorBrightnessControl | C / Win32 tray daemon, MIT | Similar minimalist footprint, different feature trade-offs |
 | ddcutil | C / Linux | The reference implementation for DDC/CI quirks and monitor capability parsing |
-| **BrightTray-Win32** | C / Win32, 35 KB | Smallest footprint, single-file, documented DDC write-reliability pipeline |
+| **BrightTray-Win32** | C / Win32, 36 KB | Smallest footprint, single-file, documented DDC write-reliability pipeline |
 
 The defensible niche is not "pure C tray app" — several 2026-era projects
 already do that. It is (a) the measured footprint and (b) the written record of

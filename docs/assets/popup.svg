@@ -3,8 +3,8 @@
   <g font-family="Segoe UI, Microsoft YaHei, Helvetica, Arial, sans-serif">
     <!-- card 1: popup (single monitor, label row removed) -->
     <rect x="20" y="16" width="310" height="348" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
-    <text x="36" y="42" font-size="14" font-weight="700" fill="#0f172a">托盘弹窗 · 单显示器 100×198 px</text>
-    <text x="36" y="58" font-size="10.5" fill="#64748b">示意按 1.4× 绘制 · 已移除顶部「亮度」标签行</text>
+    <text x="36" y="42" font-size="14" font-weight="700" fill="#0f172a">Tray popup · one monitor · 100x198 px</text>
+    <text x="36" y="58" font-size="10.5" fill="#64748b">Drawn at 1.4x · top label row removed</text>
 
     <rect x="105" y="70" width="140" height="278" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
     <text x="175" y="112" text-anchor="middle" font-size="24" font-weight="700" fill="#0f172a">65%</text>
@@ -14,27 +14,27 @@
     <circle cx="175" cy="192" r="9" fill="#2563eb" stroke="#ffffff" stroke-width="2"/>
 
     <rect x="36" y="326" width="274" height="24" rx="5" fill="#eef2f7"/>
-    <text x="46" y="342" font-size="10.5" fill="#475569">单显示器：百分比直接置顶，面板缩短 17 px</text>
+    <text x="46" y="342" font-size="10.5" fill="#475569">One monitor: percentage on top, 17 px shorter</text>
 
-    <text x="258" y="150" font-size="10.5" fill="#64748b">无标签行</text>
-    <text x="258" y="166" font-size="10.5" fill="#64748b">百分比上移</text>
-    <text x="258" y="182" font-size="10.5" fill="#64748b">滑块随之上移</text>
-    <text x="258" y="212" font-size="10.5" fill="#64748b">多显示器时</text>
-    <text x="258" y="228" font-size="10.5" fill="#64748b">保留显示器名</text>
-    <text x="258" y="244" font-size="10.5" fill="#64748b">每增一屏 +60 px</text>
+    <text x="258" y="150" font-size="10.5" fill="#64748b">No label row</text>
+    <text x="258" y="166" font-size="10.5" fill="#64748b">Percentage moves up</text>
+    <text x="258" y="182" font-size="10.5" fill="#64748b">Slider follows</text>
+    <text x="258" y="212" font-size="10.5" fill="#64748b">Multiple monitors</text>
+    <text x="258" y="228" font-size="10.5" fill="#64748b">Keep display names</text>
+    <text x="258" y="244" font-size="10.5" fill="#64748b">+60 px per extra screen</text>
 
     <!-- card 2: OSD -->
     <rect x="350" y="16" width="330" height="348" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
-    <text x="366" y="42" font-size="14" font-weight="700" fill="#0f172a">OSD 百分比浮层</text>
-    <text x="366" y="58" font-size="10.5" fill="#64748b">屏幕顶部短暂浮现，不抢焦点</text>
+    <text x="366" y="42" font-size="14" font-weight="700" fill="#0f172a">OSD percentage overlay</text>
+    <text x="366" y="58" font-size="10.5" fill="#64748b">Brief top-of-screen overlay, never takes focus</text>
 
     <rect x="370" y="70" width="290" height="172" rx="8" fill="#0f172a"/>
     <rect x="430" y="86" width="170" height="66" rx="12" fill="#1e293b" stroke="#334155"/>
     <text x="515" y="124" text-anchor="middle" font-size="27" font-weight="700" fill="#ffffff">65%</text>
     <rect x="450" y="136" width="130" height="6" rx="3" fill="#334155"/>
     <rect x="450" y="136" width="85" height="6" rx="3" fill="#60a5fa"/>
-    <text x="515" y="188" text-anchor="middle" font-size="11" fill="#94a3b8">滚轮 / ↑ / ↓ 调整时显示</text>
-    <text x="515" y="214" text-anchor="middle" font-size="11" fill="#94a3b8">约 1 秒后自动淡出</text>
+    <text x="515" y="188" text-anchor="middle" font-size="11" fill="#94a3b8">Shown on scroll / Up / Down</text>
+    <text x="515" y="214" text-anchor="middle" font-size="11" fill="#94a3b8">Fades after about 1 second</text>
 
     <rect x="370" y="258" width="290" height="82" rx="8" fill="#eef2f7" stroke="#cbd5e1"/>
     <circle cx="402" cy="299" r="12" fill="#fbbf24"/>
@@ -42,7 +42,7 @@
       <path d="M402 279 L402 276"/><path d="M402 319 L402 322"/>
       <path d="M382 299 L379 299"/><path d="M422 299 L425 299"/>
     </g>
-    <text x="432" y="292" font-size="12.5" font-weight="600" fill="#0f172a">托盘图标上直接滚轮</text>
-    <text x="432" y="312" font-size="11.5" fill="#475569">±5% · 无需打开任何面板</text>
+    <text x="432" y="292" font-size="12.5" font-weight="600" fill="#0f172a">Scroll directly on the tray icon</text>
+    <text x="432" y="312" font-size="11.5" fill="#475569">±5% · no popup needed</text>
   </g>
 </svg>
