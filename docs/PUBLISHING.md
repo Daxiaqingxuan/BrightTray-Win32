@@ -48,8 +48,13 @@ On GitHub, create a **public**, **empty** repository named exactly
 would make the first push a non-fast-forward.
 
 The repository description and topics live in Settings, not in the source
-tree. Current topics: `brightness`, `ddc-ci`, `win32`, `tray`, `windows`,
-`c-language`, `monitor`, `no-dependencies`.
+tree, and a Contents-only fine-grained PAT cannot write them (GitHub returns
+403; that needs repository administration rights). Suggested description:
+
+> A 36 KB, dependency-free DDC/CI brightness tray for Windows in pure Win32 C. Scroll the tray icon to change your monitor hardware backlight.
+
+Suggested topics: `brightness`, `ddc-ci`, `win32`, `tray`, `windows`, `c`,
+`monitor`, `no-electron`, `c-language`, `no-dependencies`.
 
 ### 2. Create a throwaway token, then run the helper
 
